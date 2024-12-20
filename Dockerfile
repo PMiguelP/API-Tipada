@@ -1,18 +1,15 @@
-# Base Node image
 FROM node:20-alpine AS base
-
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
-
 COPY . .
 RUN npm run build
 RUN npx prisma generate
 
 FROM node:20-alpine AS runner
 WORKDIR /app
-ENV NODE_ENV production
-ENV PORT 3333
+ENV NODE_ENV=production
+ENV PORT=3333
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nodejs
