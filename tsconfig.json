@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Node 20",
+  "_version": "20.1.0",
+
+  "compilerOptions": {
+    "lib": ["es2023"],
+    "module": "node16",
+    "target": "es2022",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16",
+    "rootDir": "src", // Specify the source directory
+    "outDir": "dist", // Specify the output directory
+    "declaration": true, // (Optional) Generate type declaration files
+    "sourceMap": true // (Optional) Include source maps for debugging
+  },
+  "include": ["src"], // Files to include in the compilation
+  "exclude": ["node_modules"] // Files to exclude from the compilation
+}
