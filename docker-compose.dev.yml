@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data-dev:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U usuario -d nome_do_banco"]
       interval: 5s
@@ -18,7 +18,9 @@ services:
       retries: 5
 
   api:
-    image: pedropereira32168/api-tipada:1.0.0
+    build:
+      context: .
+      target: development
     ports:
       - "3333:3333"
     depends_on:
@@ -26,21 +28,12 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://usuario:senha@postgres:5432/nome_do_banco
+      NODE_ENV: development
     volumes:
+      - ./src:/app/src
       - ./prisma:/app/prisma
-    command: >
-      sh -c "
-      until npx prisma migrate deploy; do
-        echo 'Waiting for the database...'
-        sleep 5
-      done &&
-      node dist/server.js
-      "
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3333/"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      - /app/node_modules
+    command: ./entrypoint.sh
 
 volumes:
-  postgres-data:
+  postgres-data-dev:

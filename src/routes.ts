@@ -30,6 +30,50 @@ export async function routes(app: FastifyTypedInstance) {
     }
   );
 
+  app.get(
+    "/users/:id",
+    {
+      schema: {
+        tags: ["users"],
+        description: "Retrieve specific user by ID",
+        params: z.object({
+          id: z.string(),
+        }),
+        response: {
+          200: z
+            .object({
+              id: z.string(),
+              name: z.string(),
+              email: z.string().email(),
+            })
+            .describe("User found"),
+          404: z
+            .object({
+              error: z.string(),
+            })
+            .describe("User not found"),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id },
+        });
+
+        if (!user) {
+          return reply.status(404).send({ error: "User not found" });
+        }
+
+        return reply.status(200).send(user);
+      } catch (error: unknown) {
+        return reply.status(500).send({ error: "Internal server error" });
+      }
+    }
+  );
+
   app.post(
     "/users/register",
     {
@@ -45,7 +89,7 @@ export async function routes(app: FastifyTypedInstance) {
             .object({
               message: z.string(),
             })
-            .describe("User created successfully"),
+            .describe("User criado com sucesso"),
           400: z
             .object({
               error: z.string(),
