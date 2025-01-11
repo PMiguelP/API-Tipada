@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.routes = routes;
 const client_1 = require("@prisma/client");
-const library_1 = require("@prisma/client/runtime/library"); // Correct import for error handling
+const library_1 = require("@prisma/client/runtime/library");
 const zod_1 = __importDefault(require("zod"));
 const prisma = new client_1.PrismaClient();
 async function routes(app) {
@@ -26,6 +26,43 @@ async function routes(app) {
     }, async () => {
         return await prisma.user.findMany();
     });
+    app.get("/users/:id", {
+        schema: {
+            tags: ["users"],
+            description: "Retrieve specific user by ID",
+            params: zod_1.default.object({
+                id: zod_1.default.string(),
+            }),
+            response: {
+                200: zod_1.default
+                    .object({
+                    id: zod_1.default.string(),
+                    name: zod_1.default.string(),
+                    email: zod_1.default.string().email(),
+                })
+                    .describe("User found"),
+                404: zod_1.default
+                    .object({
+                    error: zod_1.default.string(),
+                })
+                    .describe("User not found"),
+            },
+        },
+    }, async (request, reply) => {
+        const { id } = request.params;
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id },
+            });
+            if (!user) {
+                return reply.status(404).send({ error: "User not found" });
+            }
+            return reply.status(200).send(user);
+        }
+        catch (error) {
+            return reply.status(500).send({ error: "Internal server error" });
+        }
+    });
     app.post("/users/register", {
         schema: {
             tags: ["users"],
@@ -39,7 +76,7 @@ async function routes(app) {
                     .object({
                     message: zod_1.default.string(),
                 })
-                    .describe("User created successfully"),
+                    .describe("User criado com sucesso"),
                 400: zod_1.default
                     .object({
                     error: zod_1.default.string(),
@@ -57,13 +94,10 @@ async function routes(app) {
         }
         catch (error) {
             if (error instanceof library_1.PrismaClientKnownRequestError) {
-                // Handle specific Prisma error codes
                 if (error.code === "P2002") {
-                    // P2002 indicates a unique constraint violation (e.g., duplicate email)
                     return reply.status(400).send({ error: "Email already exists" });
                 }
             }
-            // If the error is not a Prisma error, rethrow it
             throw error;
         }
     });

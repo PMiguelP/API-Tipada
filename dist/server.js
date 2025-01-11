@@ -26,7 +26,7 @@ app.get("/", () => {
     return "hello world";
 });
 app.register(routes_1.routes);
-app.listen({ port: 3333 }).then(() => {
+app.listen({ port: 3333, host: "0.0.0.0" }).then(() => {
     console.log("HTTP server running");
 });
 //# sourceMappingURL=server.js.map
