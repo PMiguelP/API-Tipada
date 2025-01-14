@@ -156,3 +156,5 @@ Contribuições são bem-vindas! Por favor, crie um fork do projeto e submeta um
 ## Link da imagem do dokcer
 
 https://hub.docker.com/repository/docker/pedropereira32168/api-tipada-full/general
+
+## Link do postman

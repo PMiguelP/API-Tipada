@@ -23,6 +23,7 @@ wait_for_postgres() {
     
     log "✅ Database is ready!"
 }
+
 run_migrations() {
     log "🔄 Running database migrations..."
     if npx prisma migrate deploy; then
@@ -32,6 +33,7 @@ run_migrations() {
         exit 1
     fi
 }
+
 main() {
     wait_for_postgres
     run_migrations
