@@ -16,6 +16,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
 
   api:
     build:
@@ -34,6 +35,13 @@ services:
       - ./prisma:/app/prisma
       - /app/node_modules
     command: ./entrypoint.sh
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3333/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 volumes:
   postgres-data-dev:
+    driver: local
