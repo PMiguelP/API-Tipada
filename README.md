@@ -1,167 +1,158 @@
-# Typed User Management API
+<div align="center"> <a href="https://fastify.dev/">
+    <img
+      src="https://github.com/fastify/graphics/raw/HEAD/fastify-landscape-outlined.svg"
+      width="650"
+      height="auto"
+    />
+  </a>
+</div>
 
-A RESTful API for user management built with Node.js, Fastify, and PostgreSQL, featuring full type safety with Zod and Prisma.
+# API REST com Fastify e TypeScript
 
-## Features
+Uma API REST moderna construída com Fastify, TypeScript, e Prisma, fornecendo documentação automática via Swagger.
 
-- Fully typed CRUD operations
-- OpenAPI/Swagger documentation
-- Docker containerization with multi-stage builds
-- PostgreSQL database with health checks
-- Prisma ORM with type safety
-- Request/Response validation with Zod
-- Health monitoring
-- Resource management and scaling
-- Automatic database migrations
+## 📋 Pré-requisitos
 
-## Requirements
+- Node.js (v20 ou superior)
+- Docker e Docker Compose
+- Git
 
-- Docker
-- Docker Compose
-- Node.js 20.x (for local development)
-- npm or yarn
+## 🚀 Começar
 
-## Quick Start with Docker
-
-1. Clone the repository:
+### 1. Clonar o Repositório
 
 ```bash
-git clone <your-repository-url>
-cd <repository-name>
+git clone [URL_DO_SEU_REPOSITORIO]
+cd [NOME_DO_DIRETORIO]
 ```
 
-2. Start the application using Docker Compose:
+### 2. Configuração do Ambiente
 
-```bash
-docker-compose up -d
-```
-
-The services will be available at:
-
-- API: `http://localhost:3333`
-- Swagger Documentation: `http://localhost:3333/docs`
-- PostgreSQL: `localhost:5432`
-
-## Environment Configuration
-
-The application uses the following environment variables:
+Crie um ficheiro `.env` na raiz do projeto para o ambiente de produção:
 
 ```env
-# Database
-POSTGRES_USER=usuario
-POSTGRES_PASSWORD=senha
+POSTGRES_USER=seu_usuario
+POSTGRES_PASSWORD=sua_senha
 POSTGRES_DB=nome_do_banco
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco"
-
-# API
-PORT=3333
-NODE_ENV=development
 ```
 
-## Development Setup
+### 3. Scripts Disponíveis
 
-1. Install dependencies:
+#### Desenvolvimento
 
 ```bash
-npm install
+# Iniciar em modo desenvolvimento com Docker
+npm run docker:dev
+
+# Parar os contentores de desenvolvimento
+npm run docker:dev:down
+
+# Ver logs dos contentores
+npm run docker:logs
 ```
 
-2. Create a `.env` file using the configuration above
-
-3. Run database migrations:
+#### Produção
 
 ```bash
-npx prisma migrate dev
+# Iniciar em modo produção
+npm run docker:prod
+
+# Parar os contentores de produção
+npm run docker:prod:down
 ```
 
-4. Start the development server:
+#### Gestão do Docker
 
 ```bash
-npm run dev
+# Limpar volumes e contentores
+npm run docker:clean
+
+# Limpar todos os recursos Docker não utilizados
+npm run docker:prune
 ```
 
-## Project Structure
+#### Prisma
+
+```bash
+# Gerar cliente Prisma
+npm run prisma:generate
+
+# Executar migrações
+npm run prisma:migrate
+```
+
+## 🏗️ Estrutura do Projeto
 
 ```
-├── prisma/
-│   ├── schema.prisma
-│   └── migrations/
 ├── src/
-│   ├── routes.ts      # API routes with Zod validation
-│   ├── server.ts      # Fastify server configuration
-│   └── types.ts       # Type definitions
-├── Dockerfile         # Multi-stage build configuration
-├── docker-compose.yml # Service orchestration
-├── package.json
-└── README.md
+│   ├── server.ts        # Configuração do servidor Fastify
+│   └── routes/          # Rotas da API
+├── prisma/
+│   └── schema.prisma    # Schema do Prisma
+├── docker-compose.dev.yml   # Configuração Docker para desenvolvimento
+├── docker-compose.prod.yml  # Configuração Docker para produção
+└── Dockerfile           # Configuração multi-stage do Docker
 ```
 
-## Docker Configuration
+## 🛠️ Funcionalidades
 
-### Building the Image
+- Servidor Fastify com TypeScript
+- Validação de tipos com Zod
+- Documentação Swagger automática
+- CORS configurado
+- Gestão de erros centralizada
+- Healthcheck endpoint
+- Conteniorização com Docker
+- ORM com Prisma
 
-```bash
-docker build -t pedropereira32168/api-tipada:1.0.0 .
+## 📚 Documentação API
+
+Após iniciar o servidor, aceda à documentação Swagger em:
+
+```
+http://localhost:3333/docs
 ```
 
-### Running with Docker Compose
+## 🔍 Endpoints Principais
 
-The docker-compose.yml includes:
+- `GET /health`: Verificação do estado do servidor
+- `GET /docs`: Documentação Swagger
+- Outros endpoints disponíveis em `/api/*`
 
-- PostgreSQL 15 (Alpine-based)
-- Node.js API service
-- Health checks for both services
-- Volume persistence for database
-- Automatic database migrations
-- Resource limits and monitoring
+## ⚙️ Variáveis de Ambiente
 
-### Docker Image
+Para produção, certifique-se de configurar as seguintes variáveis no `.env`:
 
-Available on Docker Hub:
-
-```bash
-docker pull pedropereira32168/api-tipada:1.0.0
+```env
+POSTGRES_USER=seu_usuario
+POSTGRES_PASSWORD=sua_senha
+POSTGRES_DB=nome_do_banco
 ```
 
-## API Documentation
+## 🐳 Docker
 
-Interactive API documentation is available through Swagger UI at `/docs` endpoint. This includes:
+O projeto utiliza multi-stage builds para otimização:
 
-- Request/Response schemas
-- Example payloads
-- Authentication requirements (if any)
-- Response codes
+- **Desenvolvimento**: Utilizando hot-reload
+- **Produção**: Build otimizado e configurações de segurança
 
-## Development Workflow
+## 🔒 Segurança
 
-1. Create feature branch from `development`
-2. Implement changes
-3. Test locally with `npm run dev`
-4. Build and test Docker setup
-5. Push changes
-6. Create PR to `development`
+- Configuração CORS
+- Validação de tipos com Zod
+- Utilizador não-root no Docker
+- Gestão de erros centralizada
 
-## Branch Strategy
+## 📝 Notas
 
-- `development`: Development branch for ongoing work
-- `production`: Production branch (v1.0.0) for stable releases
+- Certifique-se de ter as portas 3333 e 5432 disponíveis
+- Em desenvolvimento, as alterações são refletidas automaticamente
+- Em produção, é necessário rebuildar a imagem para aplicar alterações
 
-## Health Monitoring
+## 🤝 Contribuições
 
-The application includes health checks for:
+Contribuições são bem-vindas! Por favor, crie um fork do projeto e submeta um PR com as suas alterações.
 
-- API service: Checks every 5s
-- PostgreSQL: Checks every 5s with 5 retries
+## Link da imagem do dokcer
 
-## Error Handling
-
-The API includes standardized error responses for:
-
-- Validation errors (400)
-- Not found errors (404)
-- Database errors
-- Generic server errors (500)
-
-## License
-
-MIT
+https://hub.docker.com/repository/docker/pedropereira32168/api-tipada-full/general
